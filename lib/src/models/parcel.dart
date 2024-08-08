@@ -19,6 +19,7 @@ class Parcel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String branch;
+  final String destinationbranch;
   final List<String> imageUrls;
   final List<Movement> movements;
 
@@ -38,6 +39,7 @@ class Parcel {
     required this.createdAt,
     required this.updatedAt,
     required this.branch,
+    required this.destinationbranch,
     required this.imageUrls,
     required this.movements,
   });
@@ -62,6 +64,7 @@ class Parcel {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       branch: json['branch'],
+      destinationbranch: json['destination_branch'],
       imageUrls: urls,
       movements: movements,
     );
@@ -84,6 +87,7 @@ class Parcel {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'branch': branch,
+      'destination_branch': destinationbranch,
       'image_urls': imageUrls,
       'movements': movements.map((m) => m.toJson()).toList(),
     };
