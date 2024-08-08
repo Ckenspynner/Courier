@@ -1,147 +1,118 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:http/http.dart' as http;
+import '../../models/parcel.dart'; // Import Movement class
+import '../../utils/constants.dart';
+import '../../utils/http_strings.dart';
 
-class LocationDetails extends StatelessWidget {
-  const LocationDetails({super.key});
+class LocationDetails extends StatefulWidget {
+  final List<Movement> movements; // Accept a list of Movement objects
+  final Parcel parcel;
+
+  const LocationDetails(
+      {super.key, required this.movements, required this.parcel});
+
+  @override
+  _LocationDetailsState createState() => _LocationDetailsState();
+}
+
+class _LocationDetailsState extends State<LocationDetails> {
+  List<LatLng> routePoints = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getRoute();
+  }
+
+  Future<void> _getRoute() async {
+    for (int i = 0; i < widget.movements.length - 1; i++) {
+      final Movement startMovement = widget.movements[i];
+      final Movement endMovement = widget.movements[i + 1];
+
+      final startLatLng = LatLng(
+        double.parse(startMovement.gpsLocation.split(',')[0]),
+        double.parse(startMovement.gpsLocation.split(',')[1]),
+      );
+      final endLatLng = LatLng(
+        double.parse(endMovement.gpsLocation.split(',')[0]),
+        double.parse(endMovement.gpsLocation.split(',')[1]),
+      );
+
+      final String url =
+          'https://api.openrouteservice.org/v2/directions/driving-car?api_key=$apiKey&start=${startLatLng.longitude},${startLatLng.latitude}&end=${endLatLng.longitude},${endLatLng.latitude}';
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> coordinates =
+        data['features'][0]['geometry']['coordinates'];
+
+        setState(() {
+          routePoints.addAll(
+            coordinates.map((point) => LatLng(point[1], point[0])).toList(),
+          );
+        });
+      } else {
+        throw Exception(
+            'Failed to load route between ${startMovement.branch} and ${endMovement.branch}');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393; // Set your base width for calculations
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / baseWidth;
-    double fem = ffem * 15;
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage(
-            'assets/images/rectangle_116.png',
-          ),
-        ),
+    return FlutterMap(
+      options: const MapOptions(
+        initialCenter: LatLng(-1.286389, 36.817223),
+        // Center the map around Nairobi, Kenya
+        initialZoom: 7.0,
       ),
-      child: SizedBox(
-        width: double.infinity,
-        child: Container(
-          padding: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 27.8*fem),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 1.4*fem),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFFFFF),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x40A7A9B7),
-                      offset: Offset(0*fem, 0.3*fem),
-                      blurRadius: 40,
-                    ),
-                  ],
-                ),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(2.1*fem, 0.9*fem, 0.9*fem, 1.5*fem),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(0.1*fem, 0*fem, 0.1*fem, 0*fem),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: SizedBox(
-                            width: 18.4*fem,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 1.4*fem,
-                                  height: 1.4*fem,
-                                  child: SizedBox(
-                                    width: 1.4*fem,
-                                    height: 1.4*fem,
-                                    child: SvgPicture.asset(
-                                      'assets/vectors/arrow_left_14_x2.svg',
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0*fem, 0.1*fem, 0*fem, 0*fem),
-                                  child: Text(
-                                    'Detail Location',
-                                    style: GoogleFonts.getFont(
-                                      'Roboto Condensed',
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 1*fem,
-                                      height: 0.1*fem,
-                                      color: Color(0xFF191D31),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(0*fem, 0.2*fem, 0*fem, 0.2*fem),
-                                  child: SizedBox(
-                                    width: 0.2*fem,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 0.2*fem),
-                                          child: SizedBox(
-                                            width: 0.2*fem,
-                                            height: 0.2*fem,
-                                            child: SvgPicture.asset(
-                                              'assets/vectors/vector_37_x2.svg',
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 0.2*fem),
-                                          child: SizedBox(
-                                            width: 0.2*fem,
-                                            height: 0.2*fem,
-                                            child: SvgPicture.asset(
-                                              'assets/vectors/vector_119_x2.svg',
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 0.2*fem,
-                                          height: 0.2*fem,
-                                          child: SvgPicture.asset(
-                                            'assets/vectors/vector_130_x2.svg',
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.fromLTRB(0.8*fem, 0*fem, 0*fem, 0*fem),
-                child: SizedBox(
-                  width: 15.4*fem,
-                  height: 14.3*fem,
-                  child: SvgPicture.asset(
-                    'assets/vectors/container_16_x2.svg',
-                  ),
-                ),
+      children: [
+        TileLayer(
+          urlTemplate: "https://mt.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        ),
+        CircleLayer(
+          circles: widget.movements.asMap().entries.map((entry) {
+            final int index = entry.key;
+            final Movement movement = entry.value;
+            final latLng = LatLng(
+              double.parse(movement.gpsLocation.split(',')[0]),
+              double.parse(movement.gpsLocation.split(',')[1]),
+            );
+
+            // Set color based on whether it's the first, last, or another marker
+            Color color;
+            if (index == 0) {
+              color = Colors.blue; // First marker
+            } else if (index == widget.movements.length - 1 &&
+                widget.parcel.branch ==
+                    widget.movements[widget.movements.length - 1].branch) {
+              color = Colors.green; // Last marker
+            } else {
+              color = Colors.black; // Other markers
+            }
+            return CircleMarker(
+              point: latLng,
+              color: color,
+              radius: 8,
+            );
+          }).toList(),
+        ),
+        if (routePoints.isNotEmpty)
+          PolylineLayer(
+            polylines: [
+              Polyline(
+                points: routePoints,
+                color: AppColors.primaryColor,
+                strokeWidth: 4.0,
               ),
             ],
           ),
-        ),
-      ),
+      ],
     );
   }
 }

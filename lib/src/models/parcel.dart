@@ -19,6 +19,7 @@ class Parcel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final String branch;
+  final String destinationbranch;
   final List<String> imageUrls;
   final List<Movement> movements;
 
@@ -38,6 +39,7 @@ class Parcel {
     required this.createdAt,
     required this.updatedAt,
     required this.branch,
+    required this.destinationbranch,
     required this.imageUrls,
     required this.movements,
   });
@@ -62,6 +64,7 @@ class Parcel {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       branch: json['branch'],
+      destinationbranch: json['destination_branch'],
       imageUrls: urls,
       movements: movements,
     );
@@ -84,6 +87,7 @@ class Parcel {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'branch': branch,
+      'destination_branch': destinationbranch,
       'image_urls': imageUrls,
       'movements': movements.map((m) => m.toJson()).toList(),
     };
@@ -98,18 +102,45 @@ class Parcel {
   }
 }
 
+// class Movement {
+//   final String branch;
+//   final DateTime timestamp;
+//
+//   Movement({
+//     required this.branch,
+//     required this.timestamp,
+//   });
+//
+//   factory Movement.fromJson(Map<String, dynamic> json) {
+//     return Movement(
+//       branch: json['branch'],
+//       timestamp: DateTime.parse(json['timestamp']),
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'branch': branch,
+//       'timestamp': timestamp.toIso8601String(),
+//     };
+//   }
+// }
+
 class Movement {
   final String branch;
+  final String gpsLocation;  // New field added for GPS location
   final DateTime timestamp;
 
   Movement({
     required this.branch,
+    required this.gpsLocation,  // Include in constructor
     required this.timestamp,
   });
 
   factory Movement.fromJson(Map<String, dynamic> json) {
     return Movement(
       branch: json['branch'],
+      gpsLocation: json['gps_location'],  // Parse the GPS location from JSON
       timestamp: DateTime.parse(json['timestamp']),
     );
   }
@@ -117,6 +148,7 @@ class Movement {
   Map<String, dynamic> toJson() {
     return {
       'branch': branch,
+      'gps_location': gpsLocation,  // Include in JSON serialization
       'timestamp': timestamp.toIso8601String(),
     };
   }
