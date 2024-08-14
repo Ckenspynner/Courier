@@ -87,7 +87,7 @@ class Appbar extends StatelessWidget {
               top: -0.8 * fem,
               child: Opacity(
                 opacity: 0.2,
-                child: Container(
+                child: SizedBox(
                   width: 2.5 * fem,
                   height: 2.5 * fem,
                 ),

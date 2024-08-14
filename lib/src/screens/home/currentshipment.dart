@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/parcel.dart';
 import '../details/parceldetailscreen.dart';
 import '../shipment/parceldetailscreen.dart';
+import '../trackingevent/TrackResult.dart';
 
 class Currentshipment extends StatefulWidget {
   const Currentshipment({super.key});
@@ -75,16 +76,27 @@ class _CurrentshipmentState extends State<Currentshipment> {
                   ),
                 ),
               ),
-              Container(
-                margin:
-                    EdgeInsets.fromLTRB(0 * fem, 0.1 * fem, 0 * fem, 0.1 * fem),
-                child: Text(
-                  'View All',
-                  style: GoogleFonts.getFont(
-                    'Inter',
-                    fontWeight: FontWeight.w500,
-                    fontSize: 0.8 * fem,
-                    color: Color(0xFFFD683D),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TrackResult(),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin:
+                      EdgeInsets.fromLTRB(0 * fem, 0.1 * fem, 0 * fem, 0.1 * fem),
+                  child: Text(
+                    'View All',
+                    style: GoogleFonts.getFont(
+                      'Inter',
+                      fontWeight: FontWeight.w500,
+                      fontSize: 0.8 * fem,
+                      color: const Color(0xFFFD683D),
+                    ),
                   ),
                 ),
               ),
