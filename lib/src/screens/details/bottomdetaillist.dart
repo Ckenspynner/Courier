@@ -62,7 +62,7 @@ class Details extends StatelessWidget {
                                   parcel.status == "Ready for Picked Up"
                               ? Text(
                                   'Parcel arrived at our ${parcel.branch}',
-                                   textAlign: TextAlign.center,
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.getFont(
                                     'Roboto Condensed',
                                     fontWeight: FontWeight.w800,
@@ -274,7 +274,8 @@ class Details extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 0.9*fem),
+                  margin:
+                      EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 0.9 * fem),
                   child: Align(
                     alignment: Alignment.topLeft,
                     child: SizedBox(
@@ -288,27 +289,29 @@ class Details extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 0.3*fem),
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 0.3 * fem),
                                 child: Text(
-                                  parcel.parcelNumber,
+                                  '#${parcel.parcelNumber}#',
                                   style: GoogleFonts.getFont(
                                     'Roboto Condensed',
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 0.9*fem,
-                                    height: 0.1*fem,
+                                    fontSize: 0.9 * fem,
+                                    height: 0.1 * fem,
                                     color: Color(0xFF151B33),
                                   ),
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0.6*fem, 0*fem),
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0.6 * fem, 0 * fem),
                                 child: Text(
                                   'Track Number',
                                   style: GoogleFonts.getFont(
                                     'Roboto Condensed',
                                     fontWeight: FontWeight.w500,
-                                    fontSize: 0.8*fem,
-                                    height: 0.1*fem,
+                                    fontSize: 0.8 * fem,
+                                    height: 0.1 * fem,
                                     color: Color(0xFFA7A9B7),
                                   ),
                                 ),
@@ -320,69 +323,70 @@ class Details extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0.8*fem, 0.3*fem),
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0.8 * fem, 0.3 * fem),
                                 child: parcel.status == "Delivered" ||
-                                    parcel.status == "Ready for Picked Up"
+                                        parcel.status == "Ready for Picked Up"
                                     ? Text(
-                                  '1-5 days',
-                                  style: GoogleFonts.getFont(
-                                    'Roboto Condensed',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 0.9*fem,
-                                    height: 0.1*fem,
-                                    color: const Color(0xFF191D31),
-                                  ),
-                                ):Text(
-                                  '1-3 days',
-                                  style: GoogleFonts.getFont(
-                                    'Roboto Condensed',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 0.9*fem,
-                                    height: 0.1*fem,
-                                    color: const Color(0xFF191D31),
-                                  ),
-                                ),
+                                        '1-5 days',
+                                        style: GoogleFonts.getFont(
+                                          'Roboto Condensed',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 0.9 * fem,
+                                          height: 0.1 * fem,
+                                          color: const Color(0xFF191D31),
+                                        ),
+                                      )
+                                    : Text(
+                                        '1-3 days',
+                                        style: GoogleFonts.getFont(
+                                          'Roboto Condensed',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 0.9 * fem,
+                                          height: 0.1 * fem,
+                                          color: const Color(0xFF191D31),
+                                        ),
+                                      ),
                               ),
                               parcel.status == "Delivered" ||
-                                  parcel.status == "Ready for Picked Up"
+                                      parcel.status == "Ready for Picked Up"
                                   ? Text(
-                                'Pick Up Within',
-                                style: GoogleFonts.getFont(
-                                  'Roboto Condensed',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 0.8*fem,
-                                  height: 0.1*fem,
-                                  color: Color(0xFFA7A9B7),
-                                ),
-                              ):Text(
-                                'Estimate Time',
-                                style: GoogleFonts.getFont(
-                                  'Roboto Condensed',
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 0.8*fem,
-                                  height: 0.1*fem,
-                                  color: Color(0xFFA7A9B7),
-                                ),
-                              ),
+                                      'Pick Up Within',
+                                      style: GoogleFonts.getFont(
+                                        'Roboto Condensed',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 0.8 * fem,
+                                        height: 0.1 * fem,
+                                        color: Color(0xFFA7A9B7),
+                                      ),
+                                    )
+                                  : Text(
+                                      'Estimate Time',
+                                      style: GoogleFonts.getFont(
+                                        'Roboto Condensed',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 0.8 * fem,
+                                        height: 0.1 * fem,
+                                        color: Color(0xFFA7A9B7),
+                                      ),
+                                    ),
                             ],
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Container(
-                                margin: EdgeInsets.fromLTRB(0*fem, 0*fem, 0*fem, 0.3*fem),
-                                child: Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text(
-                                    '${parcel.weight} kgs',
-                                    style: GoogleFonts.getFont(
-                                      'Roboto Condensed',
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 0.9*fem,
-                                      height: 0.1*fem,
-                                      color: Color(0xFF191D31),
-                                    ),
+                                margin: EdgeInsets.fromLTRB(
+                                    0 * fem, 0 * fem, 0 * fem, 0.3 * fem),
+                                child: Text(
+                                  '${parcel.weight} kgs',
+                                  style: GoogleFonts.getFont(
+                                    'Roboto Condensed',
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 0.9 * fem,
+                                    height: 0.1 * fem,
+                                    color: Color(0xFF191D31),
                                   ),
                                 ),
                               ),
@@ -391,8 +395,8 @@ class Details extends StatelessWidget {
                                 style: GoogleFonts.getFont(
                                   'Roboto Condensed',
                                   fontWeight: FontWeight.w500,
-                                  fontSize: 0.8*fem,
-                                  height: 0.1*fem,
+                                  fontSize: 0.8 * fem,
+                                  height: 0.1 * fem,
                                   color: Color(0xFFA7A9B7),
                                 ),
                               ),
