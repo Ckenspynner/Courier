@@ -8,6 +8,8 @@ import 'dart:ui';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/utils.dart';
+
 class ParcelDetailScreen extends StatefulWidget {
   final Parcel parcel;
 
@@ -52,10 +54,8 @@ class _ParcelDetailScreenState extends State<ParcelDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double ffem = MediaQuery.of(context).size.width / baseWidth;
-    double screenwidth = MediaQuery.of(context).size.width;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double fem = dimensions['fem']!;
     return Scaffold(
       // appBar: AppBar(
       //   title: Text('Parcel Detail'),

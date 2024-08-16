@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import '../../utils/constants.dart';
 import '../../utils/http_strings.dart';
+import '../../utils/utils.dart';
 
 class Bannerslideshow extends StatefulWidget {
   const Bannerslideshow({Key? key}) : super(key: key);
@@ -45,9 +46,10 @@ class _BannerslideshowState extends State<Bannerslideshow> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / AppDimensions.baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double ffem = dimensions['ffem']!;
+    double fem = dimensions['fem']!;
+    double screenWidth = dimensions['screenWidth']!;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(0.8 * fem, 1.5 * fem, 0.8 * fem, 0),

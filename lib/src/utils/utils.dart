@@ -8,4 +8,19 @@ class MyCustomScrollBehavior extends MaterialScrollBehavior {
     PointerDeviceKind.mouse,
   };
 }
- 
+
+//Screen dynamic setting
+class ScreenSizeUtils {
+  static double baseWidth = 393;
+
+  static Map<String, double> calculateDimensions(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double ffem = screenWidth / baseWidth;
+    double fem = ffem * 15;
+    return {
+      'ffem': ffem,
+      'fem': fem,
+      'screenWidth': screenWidth,
+    };
+  }
+}

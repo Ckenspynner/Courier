@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../utils/constants.dart';
+import '../../utils/utils.dart';
 import 'appbar.dart';
 import 'bannerslideshow.dart';
 import 'bottomnav.dart';
@@ -40,10 +41,8 @@ class _ParcelHomePageState extends State<ParcelHomePage> with SingleTickerProvid
   @override
   Widget build(BuildContext context) {
     // Calculate dynamic sizes based on screen dimensions
-    double baseWidth = 393; // Set your base width for calculations
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double fem = dimensions['fem']!;
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBackgroundColor,
@@ -62,7 +61,7 @@ class _ParcelHomePageState extends State<ParcelHomePage> with SingleTickerProvid
             CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  backgroundColor: AppColors.scaffoldBackgroundColor,
+                  backgroundColor: AppColors.primaryColor,
                   elevation: 0,
                   centerTitle: true,
                   automaticallyImplyLeading: false,
@@ -78,7 +77,7 @@ class _ParcelHomePageState extends State<ParcelHomePage> with SingleTickerProvid
                           left: 0,
                           right: 0,
                           child: Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                             decoration: AppDecorations.appBarDecoration,
                             child: Container(
                               padding: EdgeInsets.fromLTRB(1.5 * fem, 4 * fem, 0.9 * fem, 14.9 * fem),

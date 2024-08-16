@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/parcel.dart';
 import '../../utils/constants.dart';
+import '../../utils/utils.dart';
 import '../shipment/parceldetailscreen.dart';
 
 class Recentshipment extends StatefulWidget {
@@ -43,9 +44,8 @@ class _RecentshipmentState extends State<Recentshipment> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / AppDimensions.baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double fem = dimensions['fem']!;
 
     return Column(
       children: [

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/parcel.dart';
 import '../../utils/constants.dart';
+import '../../utils/utils.dart';
 
 class TrackPath extends StatelessWidget {
   final Parcel parcel;
@@ -11,10 +12,9 @@ class TrackPath extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double ffem = dimensions['ffem']!;
+    double fem = dimensions['fem']!;
 
     return SingleChildScrollView(
       child: Column(

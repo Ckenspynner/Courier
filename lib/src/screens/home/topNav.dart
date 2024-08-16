@@ -3,13 +3,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/constants.dart';
+import '../../utils/utils.dart';
 
 class Topnav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / AppDimensions.baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double fem = dimensions['fem']!;
 
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 1.5 * fem, vertical: 9.7 * fem),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/utils.dart';
+
 const Color myColor = Color(0xFFFD683D);
 
 class ParcelPathWidget extends StatelessWidget {
@@ -19,10 +21,8 @@ class ParcelPathWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double ffem = MediaQuery.of(context).size.width / baseWidth;
-    double screenWidth = MediaQuery.of(context).size.width;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double fem = dimensions['fem']!;
     return Stack(
       alignment: Alignment.centerLeft,
       children: [

@@ -101,31 +101,6 @@ class Parcel {
     return movements.isNotEmpty ? movements.last.branch : 'N/A';
   }
 }
-
-// class Movement {
-//   final String branch;
-//   final DateTime timestamp;
-//
-//   Movement({
-//     required this.branch,
-//     required this.timestamp,
-//   });
-//
-//   factory Movement.fromJson(Map<String, dynamic> json) {
-//     return Movement(
-//       branch: json['branch'],
-//       timestamp: DateTime.parse(json['timestamp']),
-//     );
-//   }
-//
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'branch': branch,
-//       'timestamp': timestamp.toIso8601String(),
-//     };
-//   }
-// }
-
 class Movement {
   final String branch;
   final String gpsLocation;  // New field added for GPS location

@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/parcel.dart';
+import '../../utils/utils.dart';
 import '../details/parceldetailscreen.dart';
 import '../shipment/parceldetailscreen.dart';
 import '../trackingevent/TrackResult.dart';
@@ -47,10 +48,9 @@ class _CurrentshipmentState extends State<Currentshipment> {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double ffem = MediaQuery.of(context).size.width / baseWidth;
-    double screenwidth = MediaQuery.of(context).size.width;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double ffem = dimensions['ffem']!;
+    double fem = dimensions['fem']!;
 
     return Column(
       children: [

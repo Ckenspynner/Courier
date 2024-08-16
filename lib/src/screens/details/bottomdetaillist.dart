@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/parcel.dart';
+import '../../utils/HorizontalDivider.dart';
+import '../../utils/utils.dart';
+import 'BarcodeExpansionPanel.dart';
 import 'trackpath.dart';
 
 class Details extends StatelessWidget {
@@ -11,10 +14,9 @@ class Details extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double screenWidth = MediaQuery.of(context).size.width;
-    double ffem = screenWidth / baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double ffem = dimensions['ffem']!;
+    double fem = dimensions['fem']!;
 
     return SingleChildScrollView(
       child: Container(
@@ -260,19 +262,7 @@ class Details extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(
-                      0 * fem, 0 * fem, 0.3 * fem, 0.8 * fem),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF3F3F3),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 0.1 * fem,
-                    ),
-                  ),
-                ),
+                const HorizontalDivider(),
                 Container(
                   margin:
                       EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 0.9 * fem),
@@ -407,20 +397,9 @@ class Details extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  margin:
-                      EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0.3 * fem, 0 * fem),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF3F3F3),
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 0.1 * fem,
-                    ),
-                  ),
-                ),
-
+                const HorizontalDivider(),
+                const BarcodeExpansionPanel(),
+                const HorizontalDivider(),
                 TrackPath(parcel: parcel), // Pass the Parcel object here
               ],
             ),
@@ -430,3 +409,4 @@ class Details extends StatelessWidget {
     );
   }
 }
+

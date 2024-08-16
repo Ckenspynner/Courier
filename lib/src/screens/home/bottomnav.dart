@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/utils.dart';
+
 class BottomNav extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
@@ -14,9 +16,9 @@ class BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double baseWidth = 393;
-    double ffem = MediaQuery.of(context).size.width / baseWidth;
-    double fem = ffem * 15;
+    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
+    double ffem = dimensions['ffem']!;
+    double fem = dimensions['fem']!;
 
     return Material( // Wrap with Material for elevation and shadow
       elevation: 30,

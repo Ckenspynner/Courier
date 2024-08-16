@@ -45,6 +45,8 @@ dependencies:
   flutter_svg:
   flutter_map: ^7.0.2
   latlong2: ^0.9.1
+  shared_preferences: ^2.3.1
+  barcode_widget: ^2.0.2
 
 dev_dependencies:
   flutter_test:

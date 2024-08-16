@@ -1,5 +1,5 @@
 //const baseUrl = 'http://10.0.2.2:8000'; // Replace with your Django backend URL
-const baseUrl = 'https://756c-105-27-149-182.ngrok-free.app';
+const baseUrl = 'https://1ab0-105-27-149-182.ngrok-free.app';
 const String apiKey = '5b3ce3597851110001cf6248a05292c42b8141ffbd0077f580f6c99f'; // Your OpenRouteService API key
 
 //----------------------------Parcels------------------------
@@ -23,8 +23,6 @@ const update_parcel = '$baseUrl/branch/updateparcels';
 
 //-------------------------banners----------------------
 const banners = '$baseUrl/configurations/banners/';
-
-
 
 //----------------------------Branches------------------------
 const branches_list = '$baseUrl/branch/branches/';
