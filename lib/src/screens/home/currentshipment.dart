@@ -9,7 +9,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../models/parcel.dart';
 import '../../utils/utils.dart';
 import '../details/parceldetailscreen.dart';
-import '../shipment/parceldetailscreen.dart';
 import '../trackingevent/TrackResult.dart';
 
 class Currentshipment extends StatefulWidget {

@@ -398,7 +398,7 @@ class Details extends StatelessWidget {
                   ),
                 ),
                 const HorizontalDivider(),
-                const BarcodeExpansionPanel(),
+                BarcodeExpansionPanel(parcelNumber: parcel.parcelNumber),
                 const HorizontalDivider(),
                 TrackPath(parcel: parcel), // Pass the Parcel object here
               ],

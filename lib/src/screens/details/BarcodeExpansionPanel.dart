@@ -5,12 +5,12 @@ import 'package:barcode_widget/barcode_widget.dart';
 import '../../utils/utils.dart';
 
 class BarcodeExpansionPanel extends StatelessWidget {
-  const BarcodeExpansionPanel({super.key});
+  final String parcelNumber;
+  const BarcodeExpansionPanel({super.key, required this.parcelNumber,});
 
   @override
   Widget build(BuildContext context) {
     Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
-    double ffem = dimensions['ffem']!;
     double fem = dimensions['fem']!;
 
     return Theme(
@@ -24,7 +24,7 @@ class BarcodeExpansionPanel extends StatelessWidget {
           ListTile(
             title: BarcodeWidget(
               barcode: Barcode.code128(),
-              data: '456782347623865',
+              data: parcelNumber,
               width: double.infinity,
               height: 5 * fem,
             ),

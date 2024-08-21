@@ -4,8 +4,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/constants.dart';
 import '../../utils/utils.dart';
+import '../rates/checkrates.dart';
 
 class Topnav extends StatelessWidget {
+  const Topnav({super.key});
+
   @override
   Widget build(BuildContext context) {
     Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
@@ -47,10 +50,35 @@ class Topnav extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildNavText('Check Rate', fem),
-              _buildNavText('Pick Up', fem),
-              _buildNavText('Drop Off', fem),
-              _buildNavText('History', fem),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const CheckRates(),
+                      ),
+                    );
+                  },
+                  child: _buildNavText('Check Rate', fem)),
+              GestureDetector(
+                  onTap: () {
+                    // Add your onTap action here for the fourth SVG
+                    print('Pick Up');
+                  },
+                  child: _buildNavText('Pick Up', fem)),
+              GestureDetector(
+                  onTap: () {
+                    // Add your onTap action here for the fourth SVG
+                    print('Drop Off');
+                  },
+                  child: _buildNavText('Drop Off', fem)),
+              GestureDetector(
+                  onTap: () {
+                    // Add your onTap action here for the fourth SVG
+                    print('History');
+                  },
+                  child: _buildNavText('History', fem)),
             ],
           ),
         ],

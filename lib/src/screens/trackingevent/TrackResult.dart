@@ -1,11 +1,14 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import '../../utils/MenuHorizontalDivider.dart';
 import '../../utils/constants.dart';
 import '../../models/parcel.dart';
+import '../../utils/http_strings.dart';
 import '../../utils/utils.dart';
+import 'package:http/http.dart' as http;
 import '../details/parceldetailscreen.dart';
 
 class TrackResult extends StatefulWidget {
@@ -17,8 +20,10 @@ class TrackResult extends StatefulWidget {
 
 class _TrackResultState extends State<TrackResult> {
   Color appBarColor = AppColors.secondaryColor;
+  final TextEditingController _textController = TextEditingController();
   List<Parcel> allParcels = []; // Full list of parcels
   List<Parcel> filteredParcels = []; // Filtered list of parcels based on input
+  SampleItem? selectedItem;
 
   @override
   void initState() {
@@ -50,10 +55,154 @@ class _TrackResultState extends State<TrackResult> {
     });
   }
 
+  Future<void> scanBarcode(BuildContext context) async {
+    String barcodeScanRes;
+    try {
+      barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
+        '#ff6666', // Color for the cancel button
+        'Cancel', // Text for the cancel button
+        true, // Show the flash icon
+        ScanMode.BARCODE, // Scan mode, can be QR, Barcode, or BOTH
+      );
+
+      if (barcodeScanRes != '-1') {
+        setState(() {
+          _textController.text = barcodeScanRes;
+        });
+
+        _filterParcels(barcodeScanRes);
+
+        // If the scan result is not canceled
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Barcode Scanned: $barcodeScanRes')),
+        // );
+      }
+    } catch (e) {
+      barcodeScanRes = 'Failed to get the barcode: $e';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(barcodeScanRes)),
+      );
+    }
+  }
+  void _showPopupMenu(BuildContext context, Offset offset, int parcelid) async {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    await showMenu(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx,
+        offset.dy,
+        overlay.size.width - offset.dx,
+        overlay.size.height - offset.dy,
+      ),
+      items: <PopupMenuEntry<SampleItem>>[
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.collected,
+          child: Text('Ready for Picked Up'),
+        ),
+        const MenuHorizontalDivider(),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.inTransit,
+          child: Text('In Transit'),
+        ),
+        const MenuHorizontalDivider(),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.delivered,
+          child: Text('Delivered'),
+        ),
+        const PopupMenuItem<SampleItem>(
+          value: SampleItem.cancelled,
+          child: Text('Cancelled'),
+        ),
+      ],
+      color: Colors.white,
+    ).then((SampleItem? item) {
+      if (item != null) {
+        _confirmAndExecuteAction(context, item,parcelid);
+        setState(() {
+          selectedItem = item;
+        });
+      }
+    });
+  }
+
+  Future<void> _confirmAndExecuteAction(
+      BuildContext context, SampleItem item, int parcelid) async {
+    bool confirmed = await _showConfirmationDialog(context, item);
+
+    if (confirmed) {
+      await _updateParcelStatus(item,parcelid);
+    }
+  }
+
+  Future<bool> _showConfirmationDialog(
+      BuildContext context, SampleItem item) async {
+    String status = _getStatusText(item);
+
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Action'),
+          content:
+              Text('Are you sure you want to mark this parcel as "$status"?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getStatusText(SampleItem item) {
+    switch (item) {
+      case SampleItem.collected:
+        return 'Ready for Picked Up';
+      case SampleItem.inTransit:
+        return 'In Transit';
+      case SampleItem.delivered:
+        return 'Delivered';
+      case SampleItem.cancelled:
+        return 'Cancelled';
+      default:
+        return '';
+    }
+  }
+
+  Future<void> _updateParcelStatus(SampleItem item, int parcelid) async {
+    String status = _getStatusText(item);
+
+    final response = await http.patch(
+      Uri.parse('$update_Parcel_Status/$parcelid/'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: '{"status": "$status"}',
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Parcel status updated to "$status".')),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to update parcel status.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Map<String, double> dimensions = ScreenSizeUtils.calculateDimensions(context);
-    double ffem = dimensions['ffem']!;
+    Map<String, double> dimensions =
+        ScreenSizeUtils.calculateDimensions(context);
     double fem = dimensions['fem']!;
 
     return Scaffold(
@@ -89,24 +238,27 @@ class _TrackResultState extends State<TrackResult> {
                   return FlexibleSpaceBar(
                     title: showTitle
                         ? Container(
-                      padding: EdgeInsets.fromLTRB(
-                          2 * fem, 0 * fem, 2 * fem, 0 * fem),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Parcel Tracking'),
-                          SvgPicture.asset(
-                            'assets/vectors/scan_10_x2.svg',
-                            width: 1.5 * fem,
-                            height: 1.5 * fem,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.black,
-                              BlendMode.srcIn,
+                            padding: EdgeInsets.fromLTRB(
+                                2 * fem, 0 * fem, 2 * fem, 0 * fem),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Parcel Tracking'),
+                                GestureDetector(
+                                  onTap: () => scanBarcode(context),
+                                  child: SvgPicture.asset(
+                                    'assets/vectors/scan_10_x2.svg',
+                                    width: 1.5 * fem,
+                                    height: 1.5 * fem,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.black,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    )
+                          )
                         : null,
                     background: SizedBox(
                       height: 10 * fem,
@@ -141,6 +293,7 @@ class _TrackResultState extends State<TrackResult> {
                               padding: EdgeInsets.fromLTRB(
                                   0.4 * fem, 0 * fem, 1.2 * fem, 0.6 * fem),
                               child: TextField(
+                                controller: _textController,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly,
@@ -150,15 +303,15 @@ class _TrackResultState extends State<TrackResult> {
                                   contentPadding: EdgeInsets.all(0.9 * fem),
                                   border: OutlineInputBorder(
                                     borderRadius:
-                                    BorderRadius.circular(0.8 * fem),
+                                        BorderRadius.circular(0.8 * fem),
                                     borderSide: const BorderSide(
                                         color: Color(0xFF1D272F)),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius:
-                                    BorderRadius.circular(0.8 * fem),
+                                        BorderRadius.circular(0.8 * fem),
                                     borderSide:
-                                    const BorderSide(color: Colors.black),
+                                        const BorderSide(color: Colors.black),
                                   ),
                                   filled: true,
                                   fillColor: AppColors.scaffoldBackgroundColor,
@@ -170,12 +323,15 @@ class _TrackResultState extends State<TrackResult> {
                                       height: 1.5 * fem,
                                     ),
                                   ),
-                                  suffixIcon: Padding(
-                                    padding: EdgeInsets.all(0.9 * fem),
-                                    child: SvgPicture.asset(
-                                      'assets/vectors/scan_10_x2.svg',
-                                      width: 1.5 * fem,
-                                      height: 1.5 * fem,
+                                  suffixIcon: GestureDetector(
+                                    onTap: () => scanBarcode(context),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(0.9 * fem),
+                                      child: SvgPicture.asset(
+                                        'assets/vectors/scan_10_x2.svg',
+                                        width: 1.5 * fem,
+                                        height: 1.5 * fem,
+                                      ),
                                     ),
                                   ),
                                   hintText: 'Enter parcel number',
@@ -205,7 +361,7 @@ class _TrackResultState extends State<TrackResult> {
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   if (filteredParcels.isEmpty) {
                     // Show the SVG if no parcels are found
                     return Padding(
@@ -314,8 +470,8 @@ class _TrackResultState extends State<TrackResult> {
                                       ),
                                     ),
                                     Container(
-                                      margin: EdgeInsets.fromLTRB(0 * fem,
-                                          0.2 * fem, 0 * fem, 0.2 * fem),
+                                      margin: EdgeInsets.fromLTRB(
+                                          0 * fem, 0 * fem, 0 * fem, 0.2 * fem),
                                       child: Text(
                                         parcel.parcelNumber,
                                         style: GoogleFonts.getFont(
@@ -328,13 +484,22 @@ class _TrackResultState extends State<TrackResult> {
                                     ),
                                   ],
                                 ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(
-                                      0 * fem, 0.4 * fem, 0 * fem, 0.4 * fem),
-                                  width: 0.7 * fem,
-                                  height: 0.7 * fem,
-                                  child: SvgPicture.asset(
-                                    'assets/vectors/group_338241_x2.svg',
+                                GestureDetector(
+                                  onTapDown: (TapDownDetails details) {
+                                    _showPopupMenu(
+                                        context, details.globalPosition,parcel.id);
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(
+                                        0 * fem, 0.4 * fem, 0 * fem, 0.4 * fem),
+                                    width: 1.5 * fem,
+                                    height: 1.5 * fem,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(0.3 * fem),
+                                      child: SvgPicture.asset(
+                                        'assets/vectors/group_338241_x2.svg',
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -359,7 +524,7 @@ class _TrackResultState extends State<TrackResult> {
                   );
                 },
                 childCount:
-                filteredParcels.isEmpty ? 1 : filteredParcels.length,
+                    filteredParcels.isEmpty ? 1 : filteredParcels.length,
               ),
             ),
           ],
